@@ -1,0 +1,50 @@
+.a360-stats-container {
+	width:48%;
+}
+
+#a360-box-site-traffic ul.a360-tabs {
+	width:400px;
+}
+#a360-box-site-traffic ul.a360-tab-contents {
+	margin-top:0px;
+}
+#a360-apply-date-range {
+	width: 100px;
+}
+
+#a360-current-date-range input {
+	width:90px;
+}
+#a360-header-credit {
+	margin-top:4px;
+	position:relative;
+}
+
+#a360-header-credit a.a360-mailchimp-link {
+	position:absolute;
+	top:-4px;
+}
+
+.a360-box {
+	zoom:1;
+}
+
+#a360-box-traffic-by-region .a360-box-content {
+	height:350px;
+}
+#a360-box-site-traffic .a360-box-content {
+	height:493px;
+}
+#a360-box-site-traffic .a360-box-content {
+	height:493px;
+}
+#a360-box-list-growth .a360-box-content, #a360-box-referring-traffic-overview .a360-box-content {
+	height:350px;
+}
+#a360-box-top-referrers .a360-box-content, #a360-box-top-content .a360-box-content {
+	height:333px;
+}
+
+.a360-table-row td, .a360-table-row-hover td, .a360-table-row-odd td, .a360-table-row-selected td {
+	line-height:1em;
+}
