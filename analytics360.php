@@ -516,9 +516,6 @@ function a360_request_handler() {
 				if (!empty($_POST['a360_api_key']) && isset($_POST['a360_api_key'])) {
 					$key_result = a360_validate_API_key($_POST['a360_api_key']);
 				}
-			    else if (isset($_POST['a360_username']) && isset($_POST['a360_password'])) {
-					$key_result = a360_fetch_API_key($_POST['a360_username'], $_POST['a360_password']);
-				}
 				if (!empty($key_result)) {
 					if ($key_result['success']) {
 						delete_option('a360_chimp_chatter_url');
