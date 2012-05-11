@@ -37,6 +37,9 @@
 							<input type="text" size="32" value="<?php echo $a360_api_key;?>" id="a360_api_key" name="a360_api_key" />
 						</div>
 					</fieldset>
+					<p class="submit a360-want-key" <?php echo ($a360_has_key ? ' style="display:none;"' : '');?>>
+						<input type="submit" name="submit" value="<?php echo __('Submit', 'analytics360');?>" id="a360-submit-mc-userpass"/>
+					</p>
 				</form>
 				
 				<form id="a360-clear-mc-api-key" action="<?php echo admin_url('options-general.php?page=analytics360.php'); ?>" method="post" class="a360-has-key" <?php echo (!$a360_has_key ? ' style="display:none;"' : '');?>>
