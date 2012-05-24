@@ -910,7 +910,7 @@
 						if (postProp) {
 							extra += '\
 								<div class="a360-post-point-link">\
-									<a href="' + postProp.guid + '"><strong>Post</strong>: ' + postProp.post_title.substring(0, 12) + '&hellip;</a>\
+									<a href="' + a360BaseUrl + '?p=' + postProp.ID + '"><strong>Post</strong>: ' + postProp.post_title.substring(0, 12) + '&hellip;</a>\
 								</div>\
 							';
 						}

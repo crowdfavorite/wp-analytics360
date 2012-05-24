@@ -36,34 +36,7 @@
 							<label for="a360_api_key">API Key</label>
 							<input type="text" size="32" value="<?php echo $a360_api_key;?>" id="a360_api_key" name="a360_api_key" />
 						</div>
-					</fiedlset>
-					<p>
-						<h3 class="a360-want-key"<?php echo ($a360_has_key ? ' style="display:none;"' : '');?>>- OR -</h2>
-					</p>
-					<fieldset class="options">
-						<p class="a360-want-key"<?php echo ($a360_has_key ? ' style="display:none;"' : '');?>>
-							Enter your MailChimp username and password to generate an API key. This key will power Analytics360&deg;.
-						</p>
-						<p class="a360-has-key"<?php echo (!$a360_has_key ? ' style="display:none;"' : '');?>>
-							Your API key powers Analytics360&deg;.
-						</p>
-						<div class="option a360-has-key"<?php echo (!$a360_has_key ? ' style="display:none;"' : '');?>>
-							<label for="a360_api_key">API Key</label>
-							<input disabled="disabled" size="32" value="<?php echo $a360_api_key;?>" id="a360_api_key" name="a360_api_key" />
-							<div class="clear"></div>
-						</div>
-						<div class="option a360-want-key"<?php echo ($a360_has_key ? ' style="display:none;"' : '');?>>
-							<label for="a360_username">Username</label>
-							<input value="" id="a360_username" name="a360_username" />
-							<div class="clear"></div>
-						</div>
-						<div class="option a360-want-key"<?php echo ($a360_has_key ? ' style="display:none;"' : '');?>>
-							<label for="a360_password">Password</label>
-							<input type="password" value="" id="a360_password" name="a360_password" />
-							<div class="clear"></div>
-						</div>
 					</fieldset>
-					
 					<p class="submit a360-want-key" <?php echo ($a360_has_key ? ' style="display:none;"' : '');?>>
 						<input type="submit" name="submit" value="<?php echo __('Submit', 'analytics360');?>" id="a360-submit-mc-userpass"/>
 					</p>

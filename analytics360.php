@@ -3,14 +3,14 @@
 Plugin Name: Analytics360
 Plugin URI: http://www.mailchimp.com/wordpress_analytics_plugin/?pid=wordpress&source=website
 Description: Allows you to pull Google Analytics and MailChimp data directly into your dashboard, so you can access robust analytics tools without leaving WordPress. Compliments of <a href="http://mailchimp.com/">MailChimp</a>.
-Version: 1.2.7
+Version: 1.2.8
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
-define('A360_VERSION', '1.2.7');
+define('A360_VERSION', '1.2.8');
 
 load_plugin_textdomain('analytics360');
 
@@ -70,6 +70,7 @@ function a360_admin_head() {
 						google.load("gdata", "1");
 						google.load("visualization", "1", {"packages": ["areachart", "table", "piechart", "imagesparkline", "geochart", "columnchart"]});
 					}
+					a360BaseUrl = "'.trailingslashit(home_url()).'";
 				</script>
 			';
 		}
@@ -515,9 +516,6 @@ function a360_request_handler() {
 			case 'update_mc_api_key':
 				if (!empty($_POST['a360_api_key']) && isset($_POST['a360_api_key'])) {
 					$key_result = a360_validate_API_key($_POST['a360_api_key']);
-				}
-			    else if (isset($_POST['a360_username']) && isset($_POST['a360_password'])) {
-					$key_result = a360_fetch_API_key($_POST['a360_username'], $_POST['a360_password']);
 				}
 				if (!empty($key_result)) {
 					if ($key_result['success']) {
