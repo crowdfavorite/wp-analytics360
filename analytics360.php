@@ -3,14 +3,14 @@
 Plugin Name: Analytics360
 Plugin URI: http://www.mailchimp.com/wordpress_analytics_plugin/?pid=wordpress&source=website
 Description: Allows you to pull Google Analytics and MailChimp data directly into your dashboard, so you can access robust analytics tools without leaving WordPress. Compliments of <a href="http://mailchimp.com/">MailChimp</a>.
-Version: 1.2.8
+Version: 1.3.0
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
-define('A360_VERSION', '1.2.8');
+define('A360_VERSION', '1.3.0');
 
 load_plugin_textdomain('analytics360');
 
@@ -49,6 +49,19 @@ function a360_admin_init() {
 }
 add_action('admin_init', 'a360_admin_init');
 
+function a360_get_mcapi($username_or_apikey, $secure = false) {
+	if (a360_MCAPI_is_compatible() && class_exists('MCAPI')) {
+		// We can use the version of MCAPI already loaded
+		return new MCAPI($username_or_apikey, $secure);
+	}
+	else {
+		// We need to load our version if it has not been.
+		if (!class_exists('A360_MCAPI')) {
+			include_once(ABSPATH.PLUGINDIR.'/analytics360/php/A360_MCAPI.class.php');
+		}
+		return new A360_MCAPI($username_or_apikey, $secure);
+	}
+}
 
 function a360_admin_head() {
 	global $a360_page, $a360_api_key, $a360_ga_token;
@@ -123,8 +136,8 @@ add_action('after_plugin_row', 'a360_warn_on_plugin_page');
 // and the existing version is < 2.1.
 function a360_MCAPI_is_compatible() {
 	if (class_exists('MCAPI')) {
-		$api = new MCAPI(null, null);
-		return version_compare($api->version, '1.2', '>=');
+		$api = new MCAPI(null);
+		return version_compare($api->version, '1.3', '=');
 	}
 	return true;
 }
@@ -299,10 +312,7 @@ function a360_request_handler() {
 			break;
 			case 'get_mc_data':
 				global $a360_api_key;
-				if (!class_exists('MCAPI')) {
-					include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-				}
-				$api = new MCAPI($a360_api_key);
+				$api = a360_get_mcapi($a360_api_key);
 				switch ($_GET['data_type']) {
 					case 'campaigns':
 						$results = $api->campaigns(array(
@@ -312,7 +322,7 @@ function a360_request_handler() {
 						if ($results) {
 							die(cf_json_encode(array(
 								'success' => true,
-								'data' => $results,
+								'data' => $results['data'],
 								'cached' => false
 							)));
 						}
@@ -685,14 +695,11 @@ function a360_dashboard() {
 	$a360_list_options = array();
 	
 	if (!empty($a360_api_key)) {
-		if (!class_exists('MCAPI')) {
-			include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-		}
-		$api = new MCAPI($a360_api_key);
+		$api = a360_get_mcapi($a360_api_key);
 		if (empty($api->errorCode)) {
 			$lists = $api->lists();
-			if (is_array($lists)) {
-				foreach ($lists as $list) {
+			if (is_array($lists) && !empty($lists['data']) && is_array($lists['data'])) {
+				foreach ($lists['data'] as $list) {
 					$a360_list_options[] = '<option value="'.$list['id'].'">'.$list['name'].'</option>';
 				}
 			}
@@ -747,10 +754,7 @@ function a360_get_chimp_chatter_url() {
 	}
 	global $a360_api_key;
 	if (!empty($a360_api_key)) {
-		if (!class_exists('MCAPI')) {
-			include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-		}
-		$api = new MCAPI($a360_api_key);
+		$api = a360_get_mcapi($a360_api_key);
 		if (!empty($api->errorCode)) {
 			return null;
 		}
@@ -780,10 +784,9 @@ function a360_get_chimp_chatter_url() {
 	}
 }
 
+// This functionality does not appear to be supported with the MCAPI v 1.3, and must be removed.
+/*
 function a360_fetch_API_key($username, $password) {
-	if (!class_exists('MCAPI')) {
-		include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-	}
 	$api = new MCAPI($username, $password, true);
 	if ($api->errorCode) {
 		return array(
@@ -796,12 +799,10 @@ function a360_fetch_API_key($username, $password) {
 		'api_key' => $api->api_key
 	);
 }
+*/
 
 function a360_validate_API_key($key) {
-	if (!class_exists('MCAPI')) {
-		include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-	}
-	$api = new MCAPI($key, null, true);
+	$api = new MCAPI($key, true);
 	$api->ping();
 	if ($api->errorCode) {
 		return array(
