@@ -387,7 +387,7 @@ function a360_request_handler() {
 						$p = ($filter == '*' ? array('max-results' => 200) : array('filters' => 'ga:medium=='.$filter, 'max-results' => 200));
 						$requests[$filter] = $request = a360_get_wp_http();
 						$all_results[$filter] = $request->request(
-							'https://www.google.com/analytics/feeds/data?'.http_build_query(array_merge(
+							'https://www.googleapis.com/analytics/v2.4/data?'.http_build_query(array_merge(
 								$parameters,
 								$p
 							)),

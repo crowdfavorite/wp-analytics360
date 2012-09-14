@@ -72,14 +72,15 @@
 		if (empty($a360_ga_token)) {
 			$authenticate_url = 'https://www.google.com/accounts/AuthSubRequest?'.http_build_query(array(
 				'next' => site_url('wp-admin/options-general.php?a360_action=capture_ga_token'),
-				'scope' => 'https://www.google.com/analytics/feeds/',
+				'scope' => 'https://www.googleapis.com/auth/analytics.readonly',
 				'secure' => 0,
 				'session' => 1
 			));
 		}
 		else {
-			$url = 'https://www.google.com/analytics/feeds/accounts/default';
-						
+			//$url = 'https://www.google.com/analytics/feeds/accounts/default';
+			$url = 'https://www.googleapis.com/analytics/v2.4/management/accounts';
+					
 			$wp_http = a360_get_wp_http();
 			$request_args = array(
 				'headers' => a360_get_authsub_headers(),
@@ -102,10 +103,15 @@
 					//$ga_auth_error = $result['body'];
 				}
 				else {
-					$xml = simplexml_load_string($result['body']);
-
+					$xml = simplexml_load_string(utf8_encode($result['body']));
 					$profiles = array();
 					foreach($xml->entry as $entry) {
+						// Property tags aren't being loaded properly with simpleXML, but we can parse the data out of other tags.
+						$properties = array();
+						$properties['profileId'] = str_replace(trailingslashit($url),'', strval($entry->id));
+						$properties['title'] = str_replace('Google Analytics Account ', '', strval($entry->title));
+						$properties['updated'] = strval($entry->updated);
+						/** Disabled due to issues with SimpleXML parsing this structure
 						$properties = array();
 						$children = $entry->children('http://schemas.google.com/analytics/2009');
 						foreach($children->property as $property) {
@@ -114,6 +120,7 @@
 						}
 						$properties['title'] = strval($entry->title);
 						$properties['updated'] = strval($entry->updated);
+						**/
 						$profiles[$properties['profileId']] = $properties;
 					}
 					if (count($profiles)) {
