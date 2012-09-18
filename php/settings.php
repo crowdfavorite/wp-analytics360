@@ -103,36 +103,34 @@
 					//$ga_auth_error = $result['body'];
 				}
 				else {
-					$xml = simplexml_load_string(utf8_encode($result['body']));
-					$profiles = array();
+					$xml = new SimpleXMLElement($result['body']);
+					$accounts = array();
 					foreach($xml->entry as $entry) {
-						// Property tags aren't being loaded properly with simpleXML, but we can parse the data out of other tags.
-						$properties = array();
-						$properties['profileId'] = str_replace(trailingslashit($url),'', strval($entry->id));
-						$properties['title'] = str_replace('Google Analytics Account ', '', strval($entry->title));
-						$properties['updated'] = strval($entry->updated);
-						/** Disabled due to issues with SimpleXML parsing this structure
 						$properties = array();
 						$children = $entry->children('http://schemas.google.com/analytics/2009');
 						foreach($children->property as $property) {
 							$attr = $property->attributes();
 							$properties[str_replace('ga:', '', $attr->name)] = strval($attr->value);
 						}
-						$properties['title'] = strval($entry->title);
+						$properties['title'] = $properties['accountName'];
 						$properties['updated'] = strval($entry->updated);
-						**/
-						$profiles[$properties['profileId']] = $properties;
+						$accounts[$properties['accountId']] = $properties;
 					}
-					if (count($profiles)) {
-						global $a360_ga_profile_id;
+					if (count($accounts)) {
+						global $a360_ga_profile_id, $a360_ga_account_id;
 						if (empty($a360_ga_profile_id)) {
-							$a360_ga_profile_id = $properties['profileId'];	// just use the last one
-							update_option('a360_ga_profile_id', $a360_ga_profile_id);
+							$a360_ga_profile_id_new = a360_set_profile_id($properties['accountId']);
+							if ($a360_ga_profile_id_new !== false) {
+								$a360_ga_account_id = $properties['accountId'];
+								update_option('a360_ga_account_id', $a360_ga_account_id);
+								$a360_ga_profile_id = $a360_ga_profile_id_new;
+								update_option('a360_ga_profile_id', $a360_ga_profile_id);
+							}
 						}
-						if (count($profiles) > 1) {
-							$profile_options = array();
-							foreach ($profiles as $id => $profile) {
-								$profile_options[] = '<option value="'.$id.'"'.($a360_ga_profile_id == $id ? 'selected="selected"' : '').'>'.$profile['title'].'</option>';
+						if (count($accounts) > 1) {
+							$account_options = array();
+							foreach ($accounts as $id => $account) {
+								$account_options[] = '<option value="'.$id.'"'.($a360_ga_account_id == $id ? 'selected="selected"' : '').'>'.$account['title'].'</option>';
 							}
 						}
 					}
@@ -179,34 +177,34 @@
 
 		<strong>Yippee! We can do some Google analytics tracking!</strong>
 		
-		<?php if (count($profiles)) : ?>
+		<?php if (count($accounts)) : ?>
 		
 			<p>
-				You have <?php echo count($profiles); ?> profiles in your account. 
+				You have <?php echo count($accounts); ?> profiles in your account. 
 				Currently you're tracking 
-				<strong><a href="https://www.google.com/analytics/reporting/?id=<?php echo $a360_ga_profile_id; ?>"><?php echo $profiles[$a360_ga_profile_id]['title']; ?></a></strong><?php echo (count($profiles) > 1 ? ', but you can change that if you\'d like.' :'.'); ?>
+				<strong><?php echo $accounts[$a360_ga_account_id]['title']; ?></strong><?php echo (count($accounts) > 1 ? ', but you can change that if you\'d like.' :'.'); ?>
 			</p>
 
-			<?php if (count($profiles) > 1) : ?>
+			<?php if (count($accounts) > 1) : ?>
 					<form action="<?php echo admin_url('options-general.php?page=analytics360.php'); ?>" method="post">
 						<input type="hidden" name="a360_action" value="set_ga_profile_id" />
 						<input type="hidden" name="a360_nonce" value="<?php echo a360_create_nonce('set_ga_profile_id'); ?>" />
 						<label for="a360-profile-id-select">From now on track:</label>
-						<select id="a360-profile-id-select" name="profile_id">
-							<?php echo implode("\n", $profile_options); ?>
+						<select id="a360-profile-id-select" name="account_id">
+							<?php echo implode("\n", $account_options); ?>
 						</select>
 						<input type="submit" class="button" value="This one!" />
 					</form>
 			<?php endif; ?>
 
-		<?php else :  /* if (count($profiles)) */ ?>
+		<?php else :  /* if (count($accounts)) */ ?>
 
 			<p>
 				You do not have any profiles associated with your Google Analytics account. Probably better
 				<a href="https://www.google.com/analytics">head over there</a> and set one up!
 			</p>
 
-		<?php endif; /* if (count($profiles)) */ ?>
+		<?php endif; /* if (count($accounts)) */ ?>
 
 	<?php } /* if (!empty($ga_auth_error)) */ ?>
 	

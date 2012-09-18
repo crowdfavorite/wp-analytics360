@@ -98,6 +98,7 @@ $a360_api_key = get_option('a360_api_key');
 
 $a360_ga_token = get_option('a360_ga_token');
 $a360_ga_profile_id = get_option('a360_ga_profile_id');
+$a360_ga_account_id = get_option('a360_ga_account_id');
 if ($a360_api_key && !empty($a360_api_key)) {
 	$a360_has_key = true;
 }
@@ -584,14 +585,46 @@ function a360_request_handler() {
 				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&update=true'));
 			break;
 			case 'set_ga_profile_id':
-				$result = update_option('a360_ga_profile_id', $_POST['profile_id']);
-				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&updated=true'));
+				if (a360_set_profile_id($_POST['account_id'])) {
+					update_option('a360_ga_account_id', $_POST['account_id']);
+					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&updated=true'));
+				}
+				else {
+					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&updated=ga_profile_error'));
+				}
 			break;
 		}
 	}
 }
 add_action('init', 'a360_request_handler');
 
+function a360_set_profile_id($account_id) {
+	// We need to look up the profile ID from the account ID, since it's no longer given in feeds.
+	$url = 'https://www.googleapis.com/analytics/v2.4/management/accounts/'.$account_id.'/webproperties/UA-'.$account_id.'-1/profiles';
+
+	$wp_http = a360_get_wp_http();
+	$request_args = array(
+		'headers' => a360_get_authsub_headers(),
+		'sslverify' => false
+	);
+	$result = $wp_http->request(
+		$url,
+		$request_args
+	);
+	if ($result && !empty($result['response']) && !empty($result['response']['code']) && $result['response']['code'] == 200) {
+		$xml = new SimpleXMLElement($result['body']);
+		foreach ($xml->entry->children('dxp', true) as $dxp_child) {
+			$atts = $dxp_child->attributes();
+			if ($atts['name'] == 'ga:profileId') {
+				global $a360_ga_profile_id;
+				$a360_ga_profile_id = strval($atts['value']);
+				update_option('a360_ga_profile_id', $a360_ga_profile_id);
+			}
+		}
+		return $a360_ga_profile_id;
+	}
+	return false;
+}
 
 function a360_check_nonce($nonce, $action_name) {
 	if (wp_verify_nonce($nonce, $action_name) === false) {
