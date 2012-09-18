@@ -590,7 +590,7 @@ function a360_request_handler() {
 					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&updated=true'));
 				}
 				else {
-					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&updated=ga_profile_error'));
+					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&a360_error='.urlencode(__('Could not save Analytics profile information', 'analytics360'))));
 				}
 			break;
 		}
