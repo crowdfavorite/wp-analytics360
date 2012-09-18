@@ -99,6 +99,10 @@ $a360_api_key = get_option('a360_api_key');
 $a360_ga_token = get_option('a360_ga_token');
 $a360_ga_profile_id = get_option('a360_ga_profile_id');
 $a360_ga_account_id = get_option('a360_ga_account_id');
+if (empty($a360_ga_account_id) && !empty($a360_ga_profile_id)) {
+	// Temporary fix necessary for seamless upgrade from 1.2 to 1.3 --ssm
+	$a360_ga_account_id = $a360_ga_profile_id;
+}
 if ($a360_api_key && !empty($a360_api_key)) {
 	$a360_has_key = true;
 }
@@ -289,6 +293,7 @@ function a360_request_handler() {
 				}
 				else {
 					delete_option('a360_ga_profile_id');
+					delete_option('a360_ga_account_id');
 					$q = http_build_query(array(
 						'updated' => true
 					));
@@ -560,6 +565,7 @@ function a360_request_handler() {
 				if ($response['response']['code'] == 200) {
 					delete_option('a360_ga_token');
 					delete_option('a360_ga_profile_id');
+					delete_option('a360_ga_account_id');
 					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&update=true'));
 				}
 				else if ($response['response']['code'] == 403) {
@@ -582,6 +588,7 @@ function a360_request_handler() {
 			case 'forget_ga_token':
 				delete_option('a360_ga_token');
 				delete_option('a360_ga_profile_id');
+				delete_option('a360_ga_account_id');
 				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&update=true'));
 			break;
 			case 'set_ga_profile_id':
