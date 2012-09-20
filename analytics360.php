@@ -842,7 +842,7 @@ function a360_fetch_API_key($username, $password) {
 */
 
 function a360_validate_API_key($key) {
-	$api = new MCAPI($key, true);
+	$api = a360_get_mcapi($key, true);
 	$api->ping();
 	if ($api->errorCode) {
 		return array(
