@@ -92,9 +92,8 @@ function a360_admin_head() {
 }
 add_action('admin_head', 'a360_admin_head');
 
-
-$a360_has_key = false;
 $a360_api_key = get_option('a360_api_key');
+$a360_has_key = !empty($a360_api_key);
 
 $a360_ga_token = get_option('a360_ga_token');
 $a360_ga_profile_id = get_option('a360_ga_profile_id');
