@@ -279,13 +279,13 @@ function a360_request_handler() {
 					else {
 						$capture_errors = 'unknown error';
 					}
-					$q = http_build_query(array(
+					$q = build_query(array(
 						'a360_ga_token_capture_errors' => $capture_errors
 					), '', '&');
 				}
 				else {
 					delete_option('a360_ga_profile_id');
-					$q = http_build_query(array(
+					$q = build_query(array(
 						'updated' => true
 					), '', '&');
 				}
@@ -384,7 +384,7 @@ function a360_request_handler() {
 						$p = ($filter == '*' ? array('max-results' => 200) : array('filters' => 'ga:medium=='.$filter, 'max-results' => 200));
 						$requests[$filter] = $request = a360_get_wp_http();
 						$all_results[$filter] = $request->request(
-							'https://www.googleapis.com/analytics/v2.4/data?'.http_build_query(array_merge(
+							'https://www.googleapis.com/analytics/v2.4/data?'.build_query(array_merge(
 								$parameters,
 								$p
 							), '', '&'),
@@ -476,7 +476,7 @@ function a360_request_handler() {
 					}
 					
 					$wp_http = a360_get_wp_http();
-					$url = 'https://www.google.com/analytics/feeds/data?'.http_build_query($parameters, '', '&');
+					$url = 'https://www.google.com/analytics/feeds/data?'.build_query($parameters, '', '&');
 				
 					$request_args = array(
 						'headers' => a360_get_authsub_headers(),
@@ -529,10 +529,10 @@ function a360_request_handler() {
 					if ($key_result['success']) {
 						delete_option('a360_chimp_chatter_url');
 						update_option('a360_api_key', $key_result['api_key']);
-						$q = http_build_query(array('updated' => 'true'), '', '&');
+						$q = build_query(array('updated' => 'true'), '', '&');
 					}
 					else {
-						$q = http_build_query(array('a360_mc_auth_error' => $key_result['error']), '', '&');
+						$q = build_query(array('a360_mc_auth_error' => $key_result['error']), '', '&');
 					}
 				}
 				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.$q));
@@ -541,7 +541,7 @@ function a360_request_handler() {
 			case 'clear_mc_api_key':
 				delete_option('a360_api_key');
 				delete_option('a360_chimp_chatter_url');
-				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.http_build_query(array('updated' => 'true'), '', '&')));
+				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.build_query(array('updated' => 'true'), '', '&')));
 			break;
 			case 'revoke_ga_token':
 				global $a360_ga_token;
@@ -560,7 +560,7 @@ function a360_request_handler() {
 					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&update=true'));
 				}
 				else if ($response['response']['code'] == 403) {
-					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.http_build_query(array(
+					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.build_query(array(
 						'a360_revoke_token_chicken_and_egg' => $response['response']['code'].': '.$response['response']['message']
 					), '', '&')));
 				}
@@ -571,7 +571,7 @@ function a360_request_handler() {
 					else {
 						$errors = array($response['response']['code'].': '.$response['response']['message']);
 					}
-					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.http_build_query(array(
+					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.build_query(array(
 						'a360_error' => implode("\n", $errors)
 					), '', '&')));
 				}

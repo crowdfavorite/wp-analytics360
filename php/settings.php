@@ -70,12 +70,12 @@
 	<li>
 <?php
 		if (empty($a360_ga_token)) {
-			$authenticate_url = 'https://www.google.com/accounts/AuthSubRequest?'.http_build_query(array(
+			$authenticate_url = 'https://www.google.com/accounts/AuthSubRequest?'.build_query(array(
 				'next' => site_url('wp-admin/options-general.php?a360_action=capture_ga_token'),
 				'scope' => 'https://www.googleapis.com/auth/analytics.readonly',
 				'secure' => 0,
 				'session' => 1
-			), '', '&');
+			));
 		}
 		else {
 			$url = 'https://www.googleapis.com/analytics/v2.4/management/accounts/~all/webproperties/~all/profiles';
