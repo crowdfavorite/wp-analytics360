@@ -75,7 +75,7 @@
 				'scope' => 'https://www.googleapis.com/auth/analytics.readonly',
 				'secure' => 0,
 				'session' => 1
-			));
+			), '', '&');
 		}
 		else {
 			//$url = 'https://www.google.com/analytics/feeds/accounts/default';
