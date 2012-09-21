@@ -80,6 +80,7 @@ Please drop us a line if you find a bug or would like to see a new feature added
 
 = 1.3.0 =
 
+* Updated to address fatal error when attempting to use this plugin with WordPress installed in a subdirectory.
 * Updated to new MailChimp API v1.3, adjusted to avoid failures due to other plugins declaring MCAPI of a different version.
 * Updated Google Analytics calls and reporting to new v2.4 Analytics API.
 

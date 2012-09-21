@@ -14,12 +14,8 @@ define('A360_VERSION', '1.3.0');
 
 load_plugin_textdomain('analytics360');
 
-if (is_file(trailingslashit(ABSPATH.PLUGINDIR).basename(__FILE__))) {
-	define('A360_FILE', trailingslashit(ABSPATH.PLUGINDIR).basename(__FILE__));
-}
-else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).dirname(__FILE__).'/'.basename(__FILE__))) {
-	define('A360_FILE', trailingslashit(ABSPATH.PLUGINDIR).dirname(__FILE__).'/'.basename(__FILE__));
-}
+// This code is not used within the plugin itself. It should be reviewed for removal. --ssm 2012-09-21
+define('A360_FILE', plugin_dir_path(__FILE__).basename(__FILE__));
 
 define('A360_PHP_COMPATIBLE', version_compare(phpversion(), '5', '>='));
 if (!A360_PHP_COMPATIBLE) {
@@ -57,7 +53,7 @@ function a360_get_mcapi($username_or_apikey, $secure = false) {
 	else {
 		// We need to load our version if it has not been.
 		if (!class_exists('A360_MCAPI')) {
-			include_once(ABSPATH.PLUGINDIR.'/analytics360/php/A360_MCAPI.class.php');
+			include_once(plugin_dir_path(__FILE__).'php/A360_MCAPI.class.php');
 		}
 		return new A360_MCAPI($username_or_apikey, $secure);
 	}
