@@ -476,7 +476,7 @@
 			table.setValue(i, 1, parseInt(row.visits, 10));
 		});
 		var geochart = new google.visualization.GeoChart($('#a360-geo-map').empty().get(0));
-		geochart.draw(table, { dataMode: 'regions', backgroundColor: '#EAF7FE', width:'600px', colors: ['#C1D8EC', '#D98E26'] });
+		geochart.draw(table, { dataMode: 'regions', backgroundColor: '#EAF7FE', width:'600px', height:'400px', colors: ['#C1D8EC', '#D98E26'] });
 	};
 		
 	a360.updateReferralMediumChart = function(event, data) {
