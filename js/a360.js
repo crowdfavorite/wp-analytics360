@@ -475,7 +475,7 @@
 			table.setValue(i, 0, row.country);
 			table.setValue(i, 1, parseInt(row.visits, 10));
 		});
-		$('#a360-geo-map, #a360-box-traffic-by-region .a360-box-content').css({"height": "374px"});
+		$('#a360-geo-map, #a360-box-traffic-by-region .a360-box-content').css({"height": "450px"});
 		var geochart = new google.visualization.GeoChart($('#a360-geo-map').empty().get(0));
 		geochart.draw(table, { dataMode: 'regions', backgroundColor: '#EAF7FE', width:'600px', colors: ['#C1D8EC', '#D98E26'] });
 	};
