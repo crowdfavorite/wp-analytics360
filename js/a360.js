@@ -850,7 +850,7 @@
 				
 				if (a360.gfx.renderer == 'svg') {
 					
-					var yAxisValues = $('text').map(function() {
+					var yAxisValues = $('#a360-all-traffic-graph text').map(function() {
 						if (this.getAttribute('transform') !== null) {
 							return null;
 						}
