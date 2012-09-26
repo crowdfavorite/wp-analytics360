@@ -475,6 +475,7 @@
 			table.setValue(i, 0, row.country);
 			table.setValue(i, 1, parseInt(row.visits, 10));
 		});
+		$('#a360-geo-map, #a360-box-traffic-by-region .a360-box-content').css({"height": "450px"});
 		var geochart = new google.visualization.GeoChart($('#a360-geo-map').empty().get(0));
 		geochart.draw(table, { dataMode: 'regions', backgroundColor: '#EAF7FE', width:'600px', colors: ['#C1D8EC', '#D98E26'] });
 	};
@@ -849,7 +850,7 @@
 				
 				if (a360.gfx.renderer == 'svg') {
 					
-					var yAxisValues = $('text').map(function() {
+					var yAxisValues = $('#a360-all-traffic-graph text').map(function() {
 						if (this.getAttribute('transform') !== null) {
 							return null;
 						}
@@ -910,7 +911,7 @@
 						if (postProp) {
 							extra += '\
 								<div class="a360-post-point-link">\
-									<a href="' + postProp.guid + '"><strong>Post</strong>: ' + postProp.post_title.substring(0, 12) + '&hellip;</a>\
+									<a href="' + a360BaseUrl + '?p=' + postProp.ID + '"><strong>Post</strong>: ' + postProp.post_title.substring(0, 12) + '&hellip;</a>\
 								</div>\
 							';
 						}

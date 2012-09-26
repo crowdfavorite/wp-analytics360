@@ -176,7 +176,7 @@ label[for=a360-ga-select-profile] {
 	float:left;
 }
 .a360-stats-list {
-	width:350px;
+	width:400px;
 	margin:0 auto;
 	position:relative;
 }
@@ -343,7 +343,7 @@ a.a360-outgoing:hover {
 	margin:0 auto;
 }
 #a360-box-referring-traffic-overview .a360-box-content, #a360-box-list-growth .a360-box-content {
-	height:350px;
+	height:380px;
 }
 /*
 #a360-box-referring-traffic-overview, #a360-box-list-growth {
