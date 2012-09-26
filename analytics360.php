@@ -3,23 +3,19 @@
 Plugin Name: Analytics360
 Plugin URI: http://www.mailchimp.com/wordpress_analytics_plugin/?pid=wordpress&source=website
 Description: Allows you to pull Google Analytics and MailChimp data directly into your dashboard, so you can access robust analytics tools without leaving WordPress. Compliments of <a href="http://mailchimp.com/">MailChimp</a>.
-Version: 1.2.8
+Version: 1.3.0
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
-define('A360_VERSION', '1.2.8');
+define('A360_VERSION', '1.3.0');
 
 load_plugin_textdomain('analytics360');
 
-if (is_file(trailingslashit(ABSPATH.PLUGINDIR).basename(__FILE__))) {
-	define('A360_FILE', trailingslashit(ABSPATH.PLUGINDIR).basename(__FILE__));
-}
-else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).dirname(__FILE__).'/'.basename(__FILE__))) {
-	define('A360_FILE', trailingslashit(ABSPATH.PLUGINDIR).dirname(__FILE__).'/'.basename(__FILE__));
-}
+// This code is not used within the plugin itself. It should be reviewed for removal. --ssm 2012-09-21
+define('A360_FILE', plugin_dir_path(__FILE__).basename(__FILE__));
 
 define('A360_PHP_COMPATIBLE', version_compare(phpversion(), '5', '>='));
 if (!A360_PHP_COMPATIBLE) {
@@ -49,6 +45,19 @@ function a360_admin_init() {
 }
 add_action('admin_init', 'a360_admin_init');
 
+function a360_get_mcapi($username_or_apikey, $secure = false) {
+	if (a360_MCAPI_is_compatible() && class_exists('MCAPI')) {
+		// We can use the version of MCAPI already loaded
+		return new MCAPI($username_or_apikey, $secure);
+	}
+	else {
+		// We need to load our version if it has not been.
+		if (!class_exists('A360_MCAPI')) {
+			include_once(plugin_dir_path(__FILE__).'php/A360_MCAPI.class.php');
+		}
+		return new A360_MCAPI($username_or_apikey, $secure);
+	}
+}
 
 function a360_admin_head() {
 	global $a360_page, $a360_api_key, $a360_ga_token;
@@ -79,15 +88,11 @@ function a360_admin_head() {
 }
 add_action('admin_head', 'a360_admin_head');
 
-
-$a360_has_key = false;
 $a360_api_key = get_option('a360_api_key');
+$a360_has_key = !empty($a360_api_key);
 
 $a360_ga_token = get_option('a360_ga_token');
 $a360_ga_profile_id = get_option('a360_ga_profile_id');
-if ($a360_api_key && !empty($a360_api_key)) {
-	$a360_has_key = true;
-}
 
 function a360_warn_on_plugin_page($plugin_file) {
 	if (strpos($plugin_file, 'analytics360.php')) {
@@ -123,8 +128,8 @@ add_action('after_plugin_row', 'a360_warn_on_plugin_page');
 // and the existing version is < 2.1.
 function a360_MCAPI_is_compatible() {
 	if (class_exists('MCAPI')) {
-		$api = new MCAPI(null, null);
-		return version_compare($api->version, '1.2', '>=');
+		$api = new MCAPI(null);
+		return version_compare($api->version, '1.3', '=');
 	}
 	return true;
 }
@@ -269,15 +274,15 @@ function a360_request_handler() {
 					else {
 						$capture_errors = 'unknown error';
 					}
-					$q = http_build_query(array(
+					$q = build_query(array(
 						'a360_ga_token_capture_errors' => $capture_errors
-					));
+					), '', '&');
 				}
 				else {
 					delete_option('a360_ga_profile_id');
-					$q = http_build_query(array(
+					$q = build_query(array(
 						'updated' => true
-					));
+					), '', '&');
 				}
 				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.$q));
 			break;
@@ -299,10 +304,7 @@ function a360_request_handler() {
 			break;
 			case 'get_mc_data':
 				global $a360_api_key;
-				if (!class_exists('MCAPI')) {
-					include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-				}
-				$api = new MCAPI($a360_api_key);
+				$api = a360_get_mcapi($a360_api_key);
 				switch ($_GET['data_type']) {
 					case 'campaigns':
 						$results = $api->campaigns(array(
@@ -312,7 +314,7 @@ function a360_request_handler() {
 						if ($results) {
 							die(cf_json_encode(array(
 								'success' => true,
-								'data' => $results,
+								'data' => $results['data'],
 								'cached' => false
 							)));
 						}
@@ -357,7 +359,7 @@ function a360_request_handler() {
 					'sort' => 'ga:date',
 					'ids' => 'ga:'.$a360_ga_profile_id
 				);
-				
+
 				// split up top referrals by filtering on each medium in turn
 				if ($_GET['data_type'] == 'top_referrals') {
 					$requests = array(
@@ -377,10 +379,10 @@ function a360_request_handler() {
 						$p = ($filter == '*' ? array('max-results' => 200) : array('filters' => 'ga:medium=='.$filter, 'max-results' => 200));
 						$requests[$filter] = $request = a360_get_wp_http();
 						$all_results[$filter] = $request->request(
-							'https://www.google.com/analytics/feeds/data?'.http_build_query(array_merge(
+							'https://www.googleapis.com/analytics/v2.4/data?'.build_query(array_merge(
 								$parameters,
 								$p
-							)),
+							), '', '&'),
 							array(
 								'headers' => a360_get_authsub_headers(),
 								'timeout' => 10,
@@ -469,7 +471,8 @@ function a360_request_handler() {
 					}
 					
 					$wp_http = a360_get_wp_http();
-					$url = 'https://www.google.com/analytics/feeds/data?'.http_build_query($parameters);
+					$url = 'https://www.google.com/analytics/feeds/data?'.build_query($parameters, '', '&');
+				
 					$request_args = array(
 						'headers' => a360_get_authsub_headers(),
 						'timeout' => 10,
@@ -521,10 +524,10 @@ function a360_request_handler() {
 					if ($key_result['success']) {
 						delete_option('a360_chimp_chatter_url');
 						update_option('a360_api_key', $key_result['api_key']);
-						$q = http_build_query(array('updated' => 'true'));
+						$q = build_query(array('updated' => 'true'), '', '&');
 					}
 					else {
-						$q = http_build_query(array('a360_mc_auth_error' => $key_result['error']));
+						$q = build_query(array('a360_mc_auth_error' => $key_result['error']), '', '&');
 					}
 				}
 				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.$q));
@@ -533,7 +536,7 @@ function a360_request_handler() {
 			case 'clear_mc_api_key':
 				delete_option('a360_api_key');
 				delete_option('a360_chimp_chatter_url');
-				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.http_build_query(array('updated' => 'true'))));
+				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.build_query(array('updated' => 'true'), '', '&')));
 			break;
 			case 'revoke_ga_token':
 				global $a360_ga_token;
@@ -552,9 +555,9 @@ function a360_request_handler() {
 					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&update=true'));
 				}
 				else if ($response['response']['code'] == 403) {
-					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.http_build_query(array(
+					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.build_query(array(
 						'a360_revoke_token_chicken_and_egg' => $response['response']['code'].': '.$response['response']['message']
-					))));
+					), '', '&')));
 				}
 				else {
 					if (is_wp_error($response)) {
@@ -563,9 +566,9 @@ function a360_request_handler() {
 					else {
 						$errors = array($response['response']['code'].': '.$response['response']['message']);
 					}
-					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.http_build_query(array(
+					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.build_query(array(
 						'a360_error' => implode("\n", $errors)
-					))));
+					), '', '&')));
 				}
 			break;
 			case 'forget_ga_token':
@@ -574,14 +577,17 @@ function a360_request_handler() {
 				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&update=true'));
 			break;
 			case 'set_ga_profile_id':
-				$result = update_option('a360_ga_profile_id', $_POST['profile_id']);
-				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&updated=true'));
+				if (update_option('a360_ga_profile_id', $_POST['profile_id'])) {
+					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&updated=true'));
+				}
+				else {
+					wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&a360_error='.urlencode(__('Could not save Analytics profile information', 'analytics360'))));
+				}
 			break;
 		}
 	}
 }
 add_action('init', 'a360_request_handler');
-
 
 function a360_check_nonce($nonce, $action_name) {
 	if (wp_verify_nonce($nonce, $action_name) === false) {
@@ -685,14 +691,11 @@ function a360_dashboard() {
 	$a360_list_options = array();
 	
 	if (!empty($a360_api_key)) {
-		if (!class_exists('MCAPI')) {
-			include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-		}
-		$api = new MCAPI($a360_api_key);
+		$api = a360_get_mcapi($a360_api_key);
 		if (empty($api->errorCode)) {
 			$lists = $api->lists();
-			if (is_array($lists)) {
-				foreach ($lists as $list) {
+			if (is_array($lists) && !empty($lists['data']) && is_array($lists['data'])) {
+				foreach ($lists['data'] as $list) {
 					$a360_list_options[] = '<option value="'.$list['id'].'">'.$list['name'].'</option>';
 				}
 			}
@@ -747,10 +750,7 @@ function a360_get_chimp_chatter_url() {
 	}
 	global $a360_api_key;
 	if (!empty($a360_api_key)) {
-		if (!class_exists('MCAPI')) {
-			include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-		}
-		$api = new MCAPI($a360_api_key);
+		$api = a360_get_mcapi($a360_api_key);
 		if (!empty($api->errorCode)) {
 			return null;
 		}
@@ -780,10 +780,9 @@ function a360_get_chimp_chatter_url() {
 	}
 }
 
+// This functionality does not appear to be supported with the MCAPI v 1.3, and must be removed.
+/*
 function a360_fetch_API_key($username, $password) {
-	if (!class_exists('MCAPI')) {
-		include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-	}
 	$api = new MCAPI($username, $password, true);
 	if ($api->errorCode) {
 		return array(
@@ -796,12 +795,10 @@ function a360_fetch_API_key($username, $password) {
 		'api_key' => $api->api_key
 	);
 }
+*/
 
 function a360_validate_API_key($key) {
-	if (!class_exists('MCAPI')) {
-		include_once(ABSPATH.PLUGINDIR.'/analytics360/php/MCAPI.class.php');
-	}
-	$api = new MCAPI($key, null, true);
+	$api = a360_get_mcapi($key, true);
 	$api->ping();
 	if ($api->errorCode) {
 		return array(
