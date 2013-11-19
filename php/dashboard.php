@@ -133,9 +133,6 @@
 			<div class="a360-table-container" id="a360-top-content"></div>
 		</div>
 	</div>
-	<div class="a360-box" id="a360-box-mc-content">
-		<iframe frameborder="0" id="a360-mc-content" style="width:100%; height:180px;" src="http://www.mailchimp.com/wpa/wpa-ads.html"></iframe>
-	</div>
 	<div class="a360-box" id="a360-box-mailchimp-activity">
 		<div class="a360-box-header"><h3>MailChimp Activity</h3><div class="a360-box-status"></div></div>
 		<div class="a360-box-content">
