@@ -10,7 +10,7 @@ Author URI: http://crowdfavorite.com
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
-define('A360_VERSION', '1.3.0');
+define('A360_VERSION', '1.3.1');
 
 load_plugin_textdomain('analytics360');
 
