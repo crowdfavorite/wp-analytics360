@@ -213,10 +213,6 @@ function a360_show_ga_auth_error($message, $errors = '') {
 	a360_warning_box($message, $errors, $config_warnings);
 }
 
-/**
- * Added capability filter, so to to enable other users to view stats
- * used two times in this function
- */
 function a360_request_handler() {
 	$cap = apply_filters( 'a360_dashboard_capability', 'manage_options' );
 	if (!empty($_GET['a360_action']) && current_user_can($cap)) {
@@ -641,27 +637,21 @@ function a360_get_authsub_headers($token = null) {
 	return array('Authorization' => 'AuthSub token="'.$token.'"');
 }
 
-/**
- * Removed first check for capability, add_*_page already has it
- * Added capability filter to dashboard, so to to enable other users to view stats
- */
 function a360_admin_menu() {
-//	if (current_user_can('manage_options')) {
-		add_options_page(
-			__('Settings', 'analytics360'),
-			__('Analytics360°', 'analytics360'),
-			'manage_options',
-			basename(__FILE__),
-			'a360_settings_form'
-		);
-		add_dashboard_page(
-			__('Dashboard', 'analytics360'),
-			__('Analytics360°', 'analytics360'),
-			apply_filters( 'a360_dashboard_capability', 'manage_options' ),
-			basename(__FILE__),
-			'a360_dashboard'
-		);
-//	}
+	add_options_page(
+		__('Settings', 'analytics360'),
+		__('Analytics360°', 'analytics360'),
+		apply_filters( 'a360_dashboard_capability', 'manage_options' ),
+		basename(__FILE__),
+		'a360_settings_form'
+	);
+	add_dashboard_page(
+		__('Dashboard', 'analytics360'),
+		__('Analytics360°', 'analytics360'),
+		apply_filters( 'a360_dashboard_capability', 'manage_options' ),
+		basename(__FILE__),
+		'a360_dashboard'
+	);
 }
 add_action('admin_menu', 'a360_admin_menu');
 
