@@ -1,5 +1,57 @@
+a {
+	color: #2C9AB7;
+}
+a:hover,
+a:active {
+	color: #52BAD5;
+}
+a:visited {
+	color: #6DC5DC;
+}
+input#a360_api_key {
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	border-color: #B1E0EC;
+}
+input#a360_api_key:focus {
+	border-color: #6DC5DC;
+}
+input#a360-submit-mc-userpass {
+	background: #2C9AB7;
+	border: none;
+	border-bottom: 2px solid #52BAD5;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	color: #fff;
+	font-size: 14px;
+	font-weight: 600;
+	margin-top: 2px;
+	padding: 8px 36px;
+	position: relative;
+	text-transform: capitalize;
+}
+input#a360-submit-mc-userpass:hover {
+	background: #52BAD5;
+	border-color: #6DC5DC;
+	color: #fff;
+	cursor: pointer;
+}
+p.submit {
+	margin-top: 0;
+}
 fieldset.options div.option {
-	background: #EAF3FA;
+	background: #C2E4EB;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
 	margin-bottom: 8px;
 	padding: 10px;
 }
@@ -7,6 +59,7 @@ fieldset.options div.option label {
 	display: block;
 	float: left;
 	font-weight: bold;
+	line-height:27px;
 	margin-right: 10px;
 	width: 150px;
 }
@@ -17,7 +70,7 @@ fieldset.options div.option span.help {
 }
 
 h2.a360-head {
-	color:#00576F;
+	color:#449A88;
 	font-size:32px;
 	border-bottom:1px solid #888;
 	margin-top:25px;
@@ -50,7 +103,7 @@ h2.a360-head {
 }
 .a360-connection-steps .a360-subhead {
 	font-size:20px;
-	color:#00576F;
+	color:#449A88;
 	border-bottom: 1px solid #bbb;
 	padding:10px 0;
 	margin-top:25px;
@@ -762,3 +815,5 @@ form.a360-revoke-or-forget {
 }
 
 /*v\:* { behavior: url(#default#VML); }*/
+
+
