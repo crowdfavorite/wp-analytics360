@@ -17,7 +17,8 @@ input#a360_api_key {
 input#a360_api_key:focus {
 	border-color: #6DC5DC;
 }
-input#a360-submit-mc-userpass {
+input#a360-submit-mc-userpass,
+.mc-button {
 	background: #2C9AB7;
 	border: none;
 	border-bottom: 2px solid #52BAD5;
@@ -33,15 +34,18 @@ input#a360-submit-mc-userpass {
 	color: #fff;
 	font-size: 14px;
 	font-weight: 600;
+	height: 30px;
 	margin-top: 2px;
-	padding: 8px 36px;
+	padding: 4px 36px 5px;
 	position: relative;
+	text-decoration: none;
 	text-transform: capitalize;
 }
-input#a360-submit-mc-userpass:hover {
+input#a360-submit-mc-userpass:hover,
+.mc-button:hover {
 	background: #52BAD5;
 	border-color: #6DC5DC;
-	color: #fff;
+	color: #fff !important;
 	cursor: pointer;
 }
 p.submit {

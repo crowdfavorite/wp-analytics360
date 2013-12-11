@@ -149,7 +149,7 @@
 
 		<p><strong>Authenticate with Google.</strong></p>
 		<p>Follow this link to be taken to Google's authentication page. After logging in there, you will be returned to Analytics360&deg;.</p>
-		<p><a href="<?php echo $authenticate_url; ?>">Begin Authentication</a></p>
+		<p><a href="<?php echo $authenticate_url; ?>" class="mc-button">Connect</a></p>
 
 <?php
 	else : // token
