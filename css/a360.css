@@ -422,9 +422,10 @@ a.a360-outgoing:hover {
 	background:#EAF7FE;
 }
 .a360-mailchimp-link {
-	background: url(<?php echo plugins_url('/analytics360/images/mailchimp.gif');?>) no-repeat center left;
-	width:104px;
-	height:28px;
+	background: url(<?php echo plugins_url('analytics360/images/mailchimp.png');?>) no-repeat center left;
+	background-size: 100px 26px;
+	width:100px;
+	height:26px;
 	margin-left:8px;
 	position:absolute;
 }
