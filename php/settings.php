@@ -37,7 +37,7 @@
 						</div>
 					</fieldset>
 					<p class="submit a360-want-key" <?php echo ($a360_has_key ? ' style="display:none;"' : '');?>>
-						<input type="submit" name="submit" value="<?php echo __('Submit', 'analytics360');?>" id="a360-submit-mc-userpass"/>
+						<input type="submit" name="submit" value="<?php echo __('Connect', 'analytics360');?>" id="a360-submit-mc-userpass"/>
 					</p>
 				</form>
 
