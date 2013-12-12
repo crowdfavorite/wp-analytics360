@@ -22,6 +22,8 @@ Learn more at [MailChimp.com](http://www.mailchimp.com/).
 
 *Note: Analytics360 requires PHP 5.*
 
+*Beach Ball graphic by [Tim Piper](http://thenounproject.com/TP-Design/) from [The Noun Project](http://thenounproject.com/).
+
 
 == Installation ==
 
