@@ -31,7 +31,7 @@ input#a360-submit-mc-userpass,
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-	color: #fff;
+	color: #fff !important;
 	font-size: 14px;
 	font-weight: 600;
 	height: 30px;
