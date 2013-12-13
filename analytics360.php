@@ -3,14 +3,14 @@
 Plugin Name: Analytics360
 Plugin URI: http://www.mailchimp.com/wordpress_analytics_plugin/?pid=wordpress&source=website
 Description: Allows you to pull Google Analytics and MailChimp data directly into your dashboard, so you can access robust analytics tools without leaving WordPress. Compliments of <a href="http://mailchimp.com/">MailChimp</a>.
-Version: 1.3.0
+Version: 1.3.1
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
-define('A360_VERSION', '1.3.0');
+define('A360_VERSION', '1.3.1');
 
 load_plugin_textdomain('analytics360');
 
@@ -214,7 +214,8 @@ function a360_show_ga_auth_error($message, $errors = '') {
 }
 
 function a360_request_handler() {
-	if (!empty($_GET['a360_action']) && current_user_can('manage_options')) {
+	$cap = apply_filters( 'a360_dashboard_capability', 'manage_options' );
+	if (!empty($_GET['a360_action']) && current_user_can($cap)) {
 		switch ($_GET['a360_action']) {
 
 			case 'admin_js':
@@ -513,7 +514,7 @@ function a360_request_handler() {
 			break;
 		}
 	}
-	if (!empty($_POST['a360_action']) && current_user_can('manage_options')) {
+	if (!empty($_POST['a360_action']) && current_user_can($cap)) {
 		a360_check_nonce($_POST['a360_nonce'], $_POST['a360_action']);
 		switch ($_POST['a360_action']) {
 			case 'update_mc_api_key':
@@ -637,22 +638,20 @@ function a360_get_authsub_headers($token = null) {
 }
 
 function a360_admin_menu() {
-	if (current_user_can('manage_options')) {
-		add_options_page(
-			__('Settings', 'analytics360'),
-			__('Analytics360°', 'analytics360'),
-			'manage_options',
-			basename(__FILE__),
-			'a360_settings_form'
-		);
-		add_dashboard_page(
-			__('Dashboard', 'analytics360'),
-			__('Analytics360°', 'analytics360'),
-			'manage_options',
-			basename(__FILE__),
-			'a360_dashboard'
-		);
-	}
+	add_options_page(
+		__('Settings', 'analytics360'),
+		__('Analytics360°', 'analytics360'),
+		apply_filters( 'a360_dashboard_capability', 'manage_options' ),
+		basename(__FILE__),
+		'a360_settings_form'
+	);
+	add_dashboard_page(
+		__('Dashboard', 'analytics360'),
+		__('Analytics360°', 'analytics360'),
+		apply_filters( 'a360_dashboard_capability', 'manage_options' ),
+		basename(__FILE__),
+		'a360_dashboard'
+	);
 }
 add_action('admin_menu', 'a360_admin_menu');
 

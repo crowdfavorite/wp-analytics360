@@ -8,8 +8,7 @@
 <ol class="a360-connection-steps">
 	<li>
 		<ul class="a360-tabs">
-			<li id="a360-create-account-tab">I need to create an account</li>
-			<li id="a360-have-account-tab" class="a360-selected">I have an account</li>
+			<li id="a360-create-account-tab"><a target="_blank" href="http://www.mailchimp.com/signup/wpa_signup/">I need to create an account</a></li>
 		</ul>
 		<h3 id="a360-connect-to-mailchimp-head" class="a360-subhead<?php echo ($a360_has_key ? ' complete' : ''); ?>">Connect to MailChimp</h3>
 		<ul class="a360-tab-contents">
@@ -38,15 +37,15 @@
 						</div>
 					</fieldset>
 					<p class="submit a360-want-key" <?php echo ($a360_has_key ? ' style="display:none;"' : '');?>>
-						<input type="submit" name="submit" value="<?php echo __('Submit', 'analytics360');?>" id="a360-submit-mc-userpass"/>
+						<input type="submit" name="submit" value="<?php echo __('Connect', 'analytics360');?>" id="a360-submit-mc-userpass"/>
 					</p>
 				</form>
-				
+
 				<form id="a360-clear-mc-api-key" action="<?php echo admin_url('options-general.php?page=analytics360.php'); ?>" method="post" class="a360-has-key" <?php echo (!$a360_has_key ? ' style="display:none;"' : '');?>>
 					<input type="hidden" name="a360_action" value="clear_mc_api_key" />
 					<input type="hidden" name="a360_nonce" value="<?php echo a360_create_nonce('clear_mc_api_key'); ?>" />
 					<p>
-						<a id="generate-new-link" href="javascript:;">Connect to a different account</a>, 
+						<a id="generate-new-link" href="javascript:;">Connect to a different account</a>,
 						or just <input type="submit" value="Forget This API Key" class="button" />
 					</p>
 				</form>
@@ -60,10 +59,6 @@
 						});
 					});
 				</script>
-
-			</li>
-			<li id="a360-create-account-content" style="display:none;">
-				<iframe frameborder="0" style="width:950px; height:450px; margin:0 auto;" src="http://www.mailchimp.com/signup/wpa_signup/"></iframe>
 			</li>
 		</ul>
 	</li>
@@ -79,7 +74,7 @@
 		}
 		else {
 			$url = 'https://www.googleapis.com/analytics/v2.4/management/accounts/~all/webproperties/~all/profiles';
-					
+
 			$wp_http = a360_get_wp_http();
 			$request_args = array(
 				'headers' => a360_get_authsub_headers(),
@@ -140,7 +135,7 @@
 ?>
 		<h3 id="a360-connect-to-google-head" class="a360-subhead<?php echo (!empty($a360_ga_token) ? ' complete' : '') ?>">Connect to Google Analytics</h3>
 
-<?php 
+<?php
 	$config_warnings = a360_config_warnings();
 	if (empty($a360_ga_token)) : // no token
 		if (isset($_GET['a360_ga_token_capture_errors'])) {
@@ -154,13 +149,13 @@
 
 		<p><strong>Authenticate with Google.</strong></p>
 		<p>Follow this link to be taken to Google's authentication page. After logging in there, you will be returned to Analytics360&deg;.</p>
-		<p><a href="<?php echo $authenticate_url; ?>">Begin Authentication</a></p>
+		<p><a href="<?php echo $authenticate_url; ?>" class="mc-button">Connect</a></p>
 
 <?php
 	else : // token
 		if (isset($_GET['a360_revoke_token_chicken_and_egg'])) {
 			a360_warning_box(
-				'<strong>You must have a valid token to revoke a token!</strong>', 
+				'<strong>You must have a valid token to revoke a token!</strong>',
 				$_GET['a360_revoke_token_chicken_and_egg'],
 				'Bit of a chicken-and-egg problem, we know. Click the link below to forget this token and start over, if necessary.'
 			);
@@ -175,12 +170,12 @@
 ?>
 
 		<strong>Yippee! We can do some Google analytics tracking!</strong>
-		
+
 		<?php if (count($profiles)) : ?>
-		
+
 			<p>
-				You have <?php echo count($profiles); ?> profiles in your account. 
-				Currently you're tracking 
+				You have <?php echo count($profiles); ?> profiles in your account.
+				Currently you're tracking
 				<strong><?php echo $profiles[$a360_ga_profile_id]['title']; ?></strong><?php echo (count($profiles) > 1 ? ', but you can change that if you\'d like.' :'.'); ?>
 			</p>
 
@@ -206,7 +201,7 @@
 		<?php endif; /* if (count($accounts)) */ ?>
 
 	<?php } /* if (!empty($ga_auth_error)) */ ?>
-	
+
 	<?php if (isset($_GET['a360_revoke_token_chicken_and_egg'])) : ?>
 		<form action="<?php echo admin_url('options-general.php?page=analytics360.php'); ?>" method="post" class="a360-revoke-or-forget">
 			<input type="hidden" name="a360_action" value="forget_ga_token" />
@@ -228,27 +223,20 @@
 			</div>
 		</form>
 	<?php endif; ?>
-	
-	
+
+
 	<?php
 	if (!empty($config_warnings)) { // have config warnings, but we have a token
 		a360_warning_box('Possible Server Configuration Problem', null, $config_warnings);
 	}
 	?>
-	
-	
+
+
 <?php endif; /* if (empty($a360_ga_token)) */ ?>
 	</li>
 </ol>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
-		jQuery('.a360-tabs li').click(function() {
-			var id = jQuery(this).attr('id');
-			jQuery('.a360-tab-contents li').hide('fast');
-			jQuery('#' + id.substring(0, id.indexOf('-tab')) + '-content').show('fast');
-			jQuery(this).addClass('a360-selected').siblings().removeClass('a360-selected');
-			return false;
-		});
 		jQuery('#a360-revoke-ga-auth-link').click(function() {
 			jQuery('#a360-revoke-ga-auth-container').slideDown();
 			return false;
