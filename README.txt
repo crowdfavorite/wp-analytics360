@@ -83,6 +83,7 @@ Please drop us a line if you find a bug or would like to see a new feature added
 = 1.3.1 =
 
 * Added filter to allow low capabilities users to view Dashboard Stats. Hook: a360_dashboard_capability
+* Refresh look & feel
 
 = 1.3.0 =
 
