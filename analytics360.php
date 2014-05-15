@@ -3,14 +3,14 @@
 Plugin Name: Analytics360
 Plugin URI: http://www.mailchimp.com/wordpress_analytics_plugin/?pid=wordpress&source=website
 Description: Allows you to pull Google Analytics and MailChimp data directly into your dashboard, so you can access robust analytics tools without leaving WordPress. Compliments of <a href="http://mailchimp.com/">MailChimp</a>.
-Version: 1.3.1
+Version: 1.3.2
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
-define('A360_VERSION', '1.3.1');
+define('A360_VERSION', '1.3.2');
 
 load_plugin_textdomain('analytics360');
 
@@ -717,11 +717,12 @@ function a360_render_chimp_chatter() {
 	if ($chimp_chatter !== false) {
 		echo '<ul id="chatter-messages">';
 		foreach ((array)$chimp_chatter as $item) {
+			$class = str_replace('lists:', '', $item['type']);
 			printf(
-				'<li class="'.$item['type'].'"><a href="%1$s" title="%2$s">%3$s</a></li>',
-				clean_url($item['url']),
-				attribute_escape(strip_tags($item['type'])),
-				$item['message']
+				'<li class="'.esc_attr($class).'"><a href="%1$s" title="%2$s">%3$s</a></li>',
+				esc_url($item['url']),
+				esc_attr(strip_tags($item['type'])),
+				esc_html($item['message'])
 			);
 		}
 		echo '</ul>';
