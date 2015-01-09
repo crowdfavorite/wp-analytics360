@@ -3,14 +3,14 @@
 Plugin Name: Analytics360
 Plugin URI: http://www.mailchimp.com/wordpress_analytics_plugin/?pid=wordpress&source=website
 Description: Allows you to pull Google Analytics and MailChimp data directly into your dashboard, so you can access robust analytics tools without leaving WordPress. Compliments of <a href="http://mailchimp.com/">MailChimp</a>.
-Version: 1.3.1
+Version: 1.3.2
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
-define('A360_VERSION', '1.3.1');
+define('A360_VERSION', '1.3.2');
 
 load_plugin_textdomain('analytics360');
 
@@ -31,7 +31,7 @@ function a360_admin_init() {
 				$pagenow == 'index.php' ? 'dashboard' : '' )
 		);
 	}
-	
+
 	if ($a360_page == 'dashboard') {
 		header('X-UA-Compatible: IE=7');	// ask ie8 to behave like ie7 for the sake of vml
 		require_once(trailingslashit(ABSPATH).'wp-includes/class-simplepie.php');
@@ -124,7 +124,7 @@ function a360_warn_on_plugin_page($plugin_file) {
 }
 add_action('after_plugin_row', 'a360_warn_on_plugin_page');
 
-// returns false only when we're not using our own MCAPI, 
+// returns false only when we're not using our own MCAPI,
 // and the existing version is < 2.1.
 function a360_MCAPI_is_compatible() {
 	if (class_exists('MCAPI')) {
@@ -178,9 +178,9 @@ function a360_warning_box($message, $errors, $extra) {
 			<p>The error message was: <span style="color:#900;">'.htmlspecialchars($errors).'</span>.</p>
 		';
 	}
-	
+
 	echo $extra;
-	
+
 	echo a360_troubleshoot_message();
 	echo '</div>';
 }
@@ -262,7 +262,7 @@ function a360_request_handler() {
 							$result = update_option('a360_ga_token', $token);
 						}
 						else {
-							// connected, but no token in response. 
+							// connected, but no token in response.
 							$error_messages = array($repsonse['body']);
 						}
 					}
@@ -291,11 +291,11 @@ function a360_request_handler() {
 				$start = (preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', $_GET['start_date']) ? $_GET['start_date'] : '0000-00-00');
 				$end = (preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', $_GET['end_date']) ? $_GET['end_date'] : '0000-00-00');
 				add_filter('posts_where', create_function(
-					'$where', 
+					'$where',
 					'return $where." AND post_date >= \''.$start.'\' AND post_date < \''.$end.'\'";'
 				));
 				$results = query_posts('post_status=publish&posts_per_page=999');
-				
+
 				header('Content-type: text/javascript');
 				die(cf_json_encode(array(
 					'success' => true,
@@ -353,7 +353,7 @@ function a360_request_handler() {
 			break;
 			case 'get_ga_data':
 				global $a360_ga_token, $a360_ga_profile_id;
-				
+
 				$parameters = array(
 					'start-date' => $_GET['start_date'],
 					'end-date' => $_GET['end_date'],
@@ -411,7 +411,7 @@ function a360_request_handler() {
 							)));
 						}
 					}
-					
+
 					header('Content-type: text/javascript');
 					die(cf_json_encode(array(
 						'success' => true,
@@ -470,10 +470,10 @@ function a360_request_handler() {
 						default:
 						break;
 					}
-					
+
 					$wp_http = a360_get_wp_http();
 					$url = 'https://www.google.com/analytics/feeds/data?'.build_query($parameters, '', '&');
-				
+
 					$request_args = array(
 						'headers' => a360_get_authsub_headers(),
 						'timeout' => 10,
@@ -602,7 +602,7 @@ function a360_create_nonce($action_name) {
 function a360_admin_js() {
 	global $a360_api_key, $a360_has_key, $a360_ga_token;
 	header('Content-type: text/javascript');
-	
+
 	if ((!isset($a360_ga_token) || empty($a360_ga_token)) && $_GET['a360_page'] == 'dashboard') {
 		// some odd js errors happen if we don't actually have content on the dashboard page.
 		die();
@@ -612,7 +612,7 @@ function a360_admin_js() {
 	require('js/jquery.datePicker.js');
 	require('js/jquery.datePickerMultiMonth.js');
 	require('js/a360.js');
-	
+
 	$pageName = 'dashboard';
 	if (in_array($_GET['a360_page'], array('dashboard', 'settings'))) {
 		$pageName = $_GET['a360_page'];
@@ -627,7 +627,7 @@ function a360_admin_js() {
 }
 
 /**
- * Formerly worked around a bug in WP 2.7's implementation of WP_Http 
+ * Formerly worked around a bug in WP 2.7's implementation of WP_Http
  * running on cURL. Left in for legacy reasons, to remove in the future
  * after thorough testing.
  */
@@ -669,11 +669,11 @@ function a360_settings_form() {
 	global $a360_api_key, $a360_has_key, $a360_ga_token;
 
 	$notification = (
-		isset($_GET['a360_error']) ? 
-			'<span class="error" style="padding:3px;"><strong>Error</strong>: '.esc_html(stripslashes($_GET['a360_error'])).'</span>' : 
+		isset($_GET['a360_error']) ?
+			'<span class="error" style="padding:3px;"><strong>Error</strong>: '.esc_html(stripslashes($_GET['a360_error'])).'</span>' :
 			''
 	);
-		
+
 	include('php/header.php');
 	include('php/settings.php');
 	include('php/footer.php');
@@ -682,13 +682,13 @@ function a360_settings_form() {
 function a360_dashboard() {
 	global $a360_api_key, $a360_ga_token, $a360_has_key;
 	$notification = (
-		isset($_GET['a360_error']) ? 
-			'<span class="error" style="padding:3px;"><strong>Error</strong>: '.esc_html(stripslashes($_GET['a360_error'])).'</span>' : 
+		isset($_GET['a360_error']) ?
+			'<span class="error" style="padding:3px;"><strong>Error</strong>: '.esc_html(stripslashes($_GET['a360_error'])).'</span>' :
 			''
 	);
-	
+
 	$a360_list_options = array();
-	
+
 	if (!empty($a360_api_key)) {
 		$api = a360_get_mcapi($a360_api_key);
 		if (empty($api->errorCode)) {
@@ -713,15 +713,16 @@ function a360_dashboard() {
 }
 
 function a360_render_chimp_chatter() {
-	$rss = a360_get_chimp_chatter(10);
-	if ($rss !== false) {
+	$chimp_chatter = a360_get_chimp_chatter(10);
+	if ($chimp_chatter !== false) {
 		echo '<ul id="chatter-messages">';
-		foreach ((array)$rss->items as $item) {
+		foreach ((array)$chimp_chatter as $item) {
+			$class = str_replace('lists:', '', $item['type']);
 			printf(
-				'<li class="'.$item['category'].'"><a href="%1$s" title="%2$s">%3$s</a></li>',
-				clean_url($item['link']),
-				attribute_escape(strip_tags($item['description'])),
-				$item['title']
+				'<li class="'.esc_attr($class).'"><a href="%1$s" title="%2$s">%3$s</a></li>',
+				esc_url($item['url']),
+				esc_attr(strip_tags($item['type'])),
+				esc_html($item['message'])
 			);
 		}
 		echo '</ul>';
@@ -729,54 +730,23 @@ function a360_render_chimp_chatter() {
 }
 
 function a360_get_chimp_chatter($num_items = -1) {
-	$url = a360_get_chimp_chatter_url();
-	if ($url) {
-		if ($rss = fetch_feed($url)) {	// intentional assignment
-			if (!is_wp_error($rss)) {
-				if ($num_items !== -1) {
-					$rss->items = array_slice($rss->items, 0, $num_items);
-				}
-				return $rss;
+	global $a360_api_key;
+	if (!empty($a360_api_key)) {
+		$api = a360_get_mcapi($a360_api_key);
+		if (empty($api->errorCode)) {
+			$chimp_chatter = $api->chimpChatter();
+			if (is_array($chimp_chatter) && !empty($chimp_chatter)) {
+				$chimp_chatter = array_slice($chimp_chatter, 0, $num_items);
 			}
+			return $chimp_chatter;
 		}
 	}
 	return false;
 }
 
 function a360_get_chimp_chatter_url() {
-	if ($url = get_option('a360_chimp_chatter_url')) {	// intentional assignment
-		return $url;
-	}
-	global $a360_api_key;
-	if (!empty($a360_api_key)) {
-		$api = a360_get_mcapi($a360_api_key);
-		if (!empty($api->errorCode)) {
-			return null;
-		}
-		
-		if (method_exists($api, 'getAccountDetails')) {
-			$result = $api->getAccountDetails();
-		}
-		else {
-			// this call is deprecated, but if user has an old version of MCAPI powering another MC plugin...
-			$result = $api->getAffiliateInfo();
-		}
-		
-		if (!empty($api->errorCode)) {
-			return null;
-		}
-		
-		// determine the right datacenter/endpoint
-    	list($key, $dc) = explode('-', $api->api_key, 2);
-    	if (!$dc) {
-			$dc = 'us1'; 
-		}
-        $host = $dc.'.admin.mailchimp.com';
-
-		$url = 'http://'.$host.'/chatter/feed?u='.$result['user_id'];
-		update_option('a360_chimp_chatter_url', $url);
-		return $url;
-	}
+	// Deprecated
+	return false;
 }
 
 // This functionality does not appear to be supported with the MCAPI v 1.3, and must be removed.
@@ -812,8 +782,8 @@ function a360_validate_API_key($key) {
 }
 
 /**
- * Adapted from: 
- * 
+ * Adapted from:
+ *
  * GAPI - Google Analytics PHP Interface
  * http://code.google.com/p/gapi-google-analytics-php-interface/
  * @copyright Stig Manning 2009
@@ -826,34 +796,34 @@ function a360_reportObjectMapper($xml_string) {
 
 	$results = null;
 	$results = array();
-	
+
 	$report_root_parameters = array();
 	$report_aggregate_metrics = array();
-	
+
 	//Load root parameters
-	
+
 	$report_root_parameters['updated'] = strval($xml->updated);
 	$report_root_parameters['generator'] = strval($xml->generator);
 	$report_root_parameters['generatorVersion'] = strval($xml->generator->attributes());
-	
+
 	$open_search_results = $xml->children('http://a9.com/-/spec/opensearchrss/1.0/');
-	
+
 	foreach($open_search_results as $key => $open_search_result) {
 		$report_root_parameters[$key] = intval($open_search_result);
 	}
-	
+
 	$google_results = $xml->children('http://schemas.google.com/analytics/2009');
 
 	foreach($google_results->dataSource->property as $property_attributes) {
 		$attr = $property_attributes->attributes();
 		$report_root_parameters[str_replace('ga:','',$attr->name)] = strval($attr->value);
 	}
-	
+
 	$report_root_parameters['startDate'] = strval($google_results->startDate);
 	$report_root_parameters['endDate'] = strval($google_results->endDate);
-	
+
 	//Load result aggregate metrics
-	
+
 	foreach($google_results->aggregates->metric as $aggregate_metric) {
 		$attr = $aggregate_metric->attributes();
 		$metric_value = strval($attr->value);
@@ -866,17 +836,17 @@ function a360_reportObjectMapper($xml_string) {
 			$report_aggregate_metrics[str_replace('ga:','',$name)] = intval($metric_value);
 		}
 	}
-	
+
 	//Load result entries
-	
+
 	foreach($xml->entry as $entry) {
 		$metrics = array();
 		$children = $entry->children('http://schemas.google.com/analytics/2009');
 		foreach($children->metric as $metric) {
-			$attr = $metric->attributes(); 
+			$attr = $metric->attributes();
 			$metric_value = strval($attr->value);
 			$name = $attr->name;
-			
+
 			//Check for float, or value with scientific notation
 			if(preg_match('/^(\d+\.\d+)|(\d+E\d+)|(\d+.\d+E\d+)$/',$metric_value)) {
 				$metrics[str_replace('ga:','',$name)] = floatval($metric_value);
@@ -885,17 +855,17 @@ function a360_reportObjectMapper($xml_string) {
 				$metrics[str_replace('ga:','',$name)] = intval($metric_value);
 			}
 		}
-		
+
 		$dimensions = array();
 		$children = $entry->children('http://schemas.google.com/analytics/2009');
 		foreach($children->dimension as $dimension) {
 			$attr = $dimension->attributes();
 			$dimensions[str_replace('ga:','',$attr->name)] = strval($attr->value);
 		}
-		
+
 		$results[] = array('metrics' => $metrics, 'dimensions' => $dimensions);
 	}
-		
+
 	return $results;
 }
 
@@ -918,18 +888,18 @@ function a360_get_wp_http() {
  * Checks if json_encode is not available and defines json_encode
  * to use php_json_encode in its stead
  * Works on iteratable objects as well - stdClass is iteratable, so all WP objects are gonna be iteratable
- */ 
+ */
 if(!function_exists('cf_json_encode')) {
 	function cf_json_encode($data) {
 		if(function_exists('json_encode')) { return json_encode($data); }
 		else { return cfjson_encode($data); }
 	}
-	
+
 	function cfjson_encode_string($str) {
-		if(is_bool($str)) { 
-			return $str ? 'true' : 'false'; 
+		if(is_bool($str)) {
+			return $str ? 'true' : 'false';
 		}
-	
+
 		return str_replace(
 			array(
 				'"'

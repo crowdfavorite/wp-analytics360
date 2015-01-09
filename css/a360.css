@@ -701,8 +701,6 @@ div.dp-popup a.dp-nav-next-year {
 	display:none;	/* better without these */
 }
 
-
-
 div.dp-popup h2 {
 	font-size:16px;
 	font-style:normal;
@@ -776,7 +774,13 @@ form.a360-revoke-or-forget {
 	font-family:Arial, sans-serif;
 }
 #chatter-messages .screenshot {
-	float:none;display:block;margin:2em 0;text-align:center;font-size:125%;color:#c60;text-decoration:underline;
+	float:none;
+	display:block;
+	margin:2em 0;
+	text-align:center;
+	font-size:125%;
+	color:#c60;
+	text-decoration:underline;
 }
 #chatter-messages .sent {
 	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/email-campaign_16.png');?>);
@@ -784,7 +788,8 @@ form.a360-revoke-or-forget {
 #chatter-messages .abuse {
 	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/flag_16.png');?>);
 	background-color:#fff;
-	font-size:1em;color:#369;
+	font-size:1em;
+	color:#369;
 }
 #chatter-messages .best_clicks,#chatter-messages .best_opens {
 	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/success_16.png');?>);
@@ -798,7 +803,6 @@ form.a360-revoke-or-forget {
 	
 }
 #chatter-messages .unsubscribes {
-	background-position:8px -5063px;
 	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/deleteuser_16.png');?>);
 }
 #chatter-messages .subscribes {
@@ -816,7 +820,8 @@ form.a360-revoke-or-forget {
 #chatter-messages .mr-notice {
 	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/billing-info_16.png');?>);
 	background-color:#a4c6e2;
-	font-size:1em;color:#369;
+	font-size:1em;
+	color:#369;
 }
 
 /*v\:* { behavior: url(#default#VML); }*/
