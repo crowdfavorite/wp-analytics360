@@ -48,14 +48,14 @@ add_action('admin_init', 'a360_admin_init');
 function a360_get_mcapi($username_or_apikey, $secure = false) {
 	if (a360_MCAPI_is_compatible() && class_exists('MCAPI')) {
 		// We can use the version of MCAPI already loaded
-		return new MCAPI($username_or_apikey, $secure);
+		return new MCAPI( $username_or_apikey, $secure );
 	}
 	else {
 		// We need to load our version if it has not been.
-		if (!class_exists('A360_MCAPI')) {
-			include_once(plugin_dir_path(__FILE__).'php/A360_MCAPI.class.php');
+		if ( ! class_exists( 'Mailchimp' ) ) {
+			include_once( plugin_dir_path(__FILE__).'php/api/Mailchimp.php' );
 		}
-		return new A360_MCAPI($username_or_apikey, $secure);
+		return new Mailchimp( $username_or_apikey, array() );
 	}
 }
 
@@ -129,7 +129,7 @@ add_action('after_plugin_row', 'a360_warn_on_plugin_page');
 function a360_MCAPI_is_compatible() {
 	if (class_exists('MCAPI')) {
 		$api = new MCAPI(null);
-		return version_compare($api->version, '1.3', '=');
+		return version_compare($api->version, '2.0', '=');
 	}
 	return true;
 }
@@ -305,48 +305,60 @@ function a360_request_handler() {
 			break;
 			case 'get_mc_data':
 				global $a360_api_key;
-				$api = a360_get_mcapi($a360_api_key);
-				switch ($_GET['data_type']) {
+				$api = a360_get_mcapi( $a360_api_key );
+				switch ( $_GET['data_type'] ) {
 					case 'campaigns':
-						$results = $api->campaigns(array(
-							'sendtime_start' => $_GET['start_date'],
-							'end_start' => $_GET['end_date']
-						));
-						if ($results) {
-							die(cf_json_encode(array(
-								'success' => true,
-								'data' => $results['data'],
-								'cached' => false
-							)));
+						try {
+							$results = $api->campaigns->getList(
+								array(
+									'sendtime_start' => $_GET['start_date'],
+									'end_start' => $_GET['end_date']
+								),
+								0, // Starting
+								100 // Limit, max is 100
+							 );
+							if ( $results ) {
+								die(
+									cf_json_encode( array(
+										'success' => true,
+										'data' => $results['data'],
+										'cached' => false
+									) )
+								);
+							}
+							else {
+								die(
+									cf_json_encode( array(
+										'success' => true,
+										'data' => $results,
+										'cached' => false
+									) )
+								);
+							}
 						}
-						else if (empty($api->errorCode)) {
-							die(cf_json_encode(array(
-								'success' => true,
-								'data' => $results,
-								'cached' => false
-							)));
-						}
-						else {
-							die(cf_json_encode(array(
-								'success' => false,
-								'error' => $api->errorMessage
-							)));
+						catch ( Mailchimp_Error $e ) {
+							die( cf_json_encode( array(
+									'success' => false,
+									'error' => $e->getMessage(),
+								) )
+							);
 						}
 					break;
 					case 'list_growth':
-						$results = $api->listGrowthHistory($_GET['list_id']);
-						if ($results) {
-							die(cf_json_encode(array(
+						try {
+							$results = $api->lists->growthHistory( $_GET['list_id'] );
+							die( cf_json_encode( array(
 								'success' => true,
 								'data' => $results,
 								'cached' => false
-							)));
+							) ) );
 						}
-						else {
-							die(cf_json_encode(array(
-								'success' => false,
-								'error' => $api->errorMessage
-							)));
+						catch ( Mailchimp_Error $e ) {
+							die( cf_json_encode( array(
+									'success' => false,
+									'error' => $e->getMessage(),
+								) )
+							);
 						}
 					break;
 				}
@@ -518,20 +530,20 @@ function a360_request_handler() {
 		a360_check_nonce($_POST['a360_nonce'], $_POST['a360_action']);
 		switch ($_POST['a360_action']) {
 			case 'update_mc_api_key':
-				if (!empty($_POST['a360_api_key']) && isset($_POST['a360_api_key'])) {
-					$key_result = a360_validate_API_key($_POST['a360_api_key']);
+				if ( ! empty( $_POST['a360_api_key'] ) && isset( $_POST['a360_api_key'] ) ) {
+					$key_result = a360_validate_API_key( $_POST['a360_api_key'] );
 				}
-				if (!empty($key_result)) {
-					if ($key_result['success']) {
-						delete_option('a360_chimp_chatter_url');
-						update_option('a360_api_key', $key_result['api_key']);
-						$q = build_query(array('updated' => 'true'), '', '&');
+				if ( ! empty( $key_result ) ) {
+					if ( $key_result['success'] ) {
+						delete_option( 'a360_chimp_chatter_url' );
+						update_option( 'a360_api_key', $key_result['api_key'] );
+						$q = build_query( array('updated' => 'true'), '', '&' );
 					}
 					else {
-						$q = build_query(array('a360_mc_auth_error' => $key_result['error']), '', '&');
+						$q = build_query( array( 'a360_mc_auth_error' => $key_result['error'] ), '', '&' );
 					}
 				}
-				wp_redirect(site_url('wp-admin/options-general.php?page='.basename(__FILE__).'&'.$q));
+				wp_redirect( site_url( 'wp-admin/options-general.php?page=' . basename(__FILE__) . '&' . $q ) );
 				die();
 			break;
 			case 'clear_mc_api_key':
@@ -689,21 +701,24 @@ function a360_dashboard() {
 
 	$a360_list_options = array();
 
-	if (!empty($a360_api_key)) {
-		$api = a360_get_mcapi($a360_api_key);
-		if (empty($api->errorCode)) {
-			$lists = $api->lists();
-			if (is_array($lists) && !empty($lists['data']) && is_array($lists['data'])) {
-				foreach ($lists['data'] as $list) {
-					$a360_list_options[] = '<option value="'.$list['id'].'">'.$list['name'].'</option>';
+	if ( ! empty( $a360_api_key ) ) {
+		try {
+			$api = a360_get_mcapi( $a360_api_key );
+			try {
+				$lists = $api->lists->getList(array(), 0, 100);
+				if ( is_array( $lists ) && ! empty( $lists['data'] ) && is_array( $lists['data'] ) ) {
+					foreach ( $lists['data'] as $list ) {
+						$a360_list_options[] = '<option value="'.$list['id'].'">'.$list['name'].'</option>';
+					}
 				}
 			}
-			else {
-				$a360_list_options[] = '<option value="">Error: '.$api->errorMessage.'</option>';
+			catch ( Mailchimp_Error $e ) {
+				$a360_list_options[] = '<option value="">Error: ' . $e->getMessage() . '</option>';
 			}
+
 		}
-		else {
-			$a360_list_options[] = '<option value="">API Key Error: '.$api->errorMessage.'</option>';
+		catch ( Mailchimp_Error $e ) {
+			$a360_list_options[] = '<option value="">API Key Error: ' . $e->getMessage() . '</option>';
 		}
 	}
 
@@ -729,16 +744,21 @@ function a360_render_chimp_chatter() {
 	}
 }
 
-function a360_get_chimp_chatter($num_items = -1) {
+function a360_get_chimp_chatter( $num_items = -1 ) {
 	global $a360_api_key;
-	if (!empty($a360_api_key)) {
-		$api = a360_get_mcapi($a360_api_key);
-		if (empty($api->errorCode)) {
-			$chimp_chatter = $api->chimpChatter();
-			if (is_array($chimp_chatter) && !empty($chimp_chatter)) {
-				$chimp_chatter = array_slice($chimp_chatter, 0, $num_items);
+	if ( ! empty( $a360_api_key ) ) {
+		try {
+			$api = a360_get_mcapi($a360_api_key);
+
+			$chimp_chatter = $api->helper->chimpChatter();
+			if ( is_array( $chimp_chatter ) && ! empty( $chimp_chatter ) ) {
+				$chimp_chatter = array_slice( $chimp_chatter, 0, $num_items );
 			}
 			return $chimp_chatter;
+		}
+		catch ( Mailchimp_Error $e ) {
+			// Do nothing, this is what happened pre API 2.0 conversion
+			return false;
 		}
 	}
 	return false;
@@ -766,18 +786,22 @@ function a360_fetch_API_key($username, $password) {
 }
 */
 
-function a360_validate_API_key($key) {
-	$api = a360_get_mcapi($key, true);
-	$api->ping();
-	if ($api->errorCode) {
+function a360_validate_API_key( $key ) {
+	$api = a360_get_mcapi( $key, true );
+
+	try {
+		$api->helper->ping();
+	}
+	catch ( Mailchimp_Error $e ) {
 		return array(
 			'success' => false,
-			'error' => $api->errorMessage
+			'error' => $e->getMessage(),
 		);
 	}
+
 	return array(
 		'success' => true,
-		'api_key' => $api->api_key
+		'api_key' => $api->apikey
 	);
 }
 
