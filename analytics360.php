@@ -8,7 +8,7 @@ Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
- ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
+// ini_set( 'display_errors', '1' ); ini_set( 'error_reporting', E_ALL );
 
 define( 'A360_VERSION', '1.4.0' );
 
@@ -127,9 +127,9 @@ add_action('after_plugin_row', 'a360_warn_on_plugin_page');
 // returns false only when we're not using our own MCAPI,
 // and the existing version is < 2.1.
 function a360_MCAPI_is_compatible() {
-	if (class_exists('MCAPI')) {
-		$api = new MCAPI(null);
-		return version_compare($api->version, '2.0', '=');
+	if ( class_exists( 'MCAPI' ) ) {
+		$api = new MCAPI( null );
+		return version_compare( $api->version, '2.0', '=' );
 	}
 	return true;
 }
@@ -705,10 +705,10 @@ function a360_dashboard() {
 		try {
 			$api = a360_get_mcapi( $a360_api_key );
 			try {
-				$lists = $api->lists->getList(array(), 0, 100);
+				$lists = $api->lists->getList( array(), 0, 100 );
 				if ( is_array( $lists ) && ! empty( $lists['data'] ) && is_array( $lists['data'] ) ) {
 					foreach ( $lists['data'] as $list ) {
-						$a360_list_options[] = '<option value="'.$list['id'].'">'.$list['name'].'</option>';
+						$a360_list_options[] = '<option value="' . $list['id'] . '">' . $list['name'] . '</option>';
 					}
 				}
 			}
@@ -748,7 +748,7 @@ function a360_get_chimp_chatter( $num_items = -1 ) {
 	global $a360_api_key;
 	if ( ! empty( $a360_api_key ) ) {
 		try {
-			$api = a360_get_mcapi($a360_api_key);
+			$api = a360_get_mcapi( $a360_api_key );
 
 			$chimp_chatter = $api->helper->chimpChatter();
 			if ( is_array( $chimp_chatter ) && ! empty( $chimp_chatter ) ) {
