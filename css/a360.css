@@ -118,7 +118,7 @@ h2.a360-head {
 
 .a360-connection-steps .a360-subhead.complete {
 	color:#888;
-	background: url(<?php echo plugins_url('/analytics360/images/check.gif');?>) no-repeat 0 4px;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/check.gif');?>) no-repeat 0 4px;
 	padding:10px 0 10px 35px;
 }
 
@@ -192,10 +192,10 @@ label[for=a360-ga-select-profile] {
 .a360-box-header .a360-box-status.a360-normal {
 }
 .a360-box-header .a360-box-status.a360-loading {
-	background: url(<?php echo plugins_url('/analytics360/images/working-small-graybg.gif');?>) no-repeat center center;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/working-small-graybg.gif');?>) no-repeat center center;
 }
 .a360-box-header .a360-box-status.a360-error {
-	background: url(<?php echo plugins_url('/analytics360/images/warning.gif');?>) no-repeat center center;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/warning.gif');?>) no-repeat center center;
 	cursor:pointer;
 }
 .a360-box-header h3 {
@@ -257,7 +257,7 @@ label[for=a360-ga-select-profile] {
 #a360-all-traffic-traffic-tab {
 }
 .loading {
-	background: url(<?php echo plugins_url('/analytics360/images/working.gif');?>) no-repeat center center;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/working.gif');?>) no-repeat center center;
 	text-align:center;
 	color:#ccc;
 	font-size:18px;
@@ -274,10 +274,10 @@ label[for=a360-ga-select-profile] {
 	color:#888;
 }
 #a360-linechart-legend li.blog-post {
-	background: url(<?php echo plugins_url('/analytics360/images/legend-circles.gif');?>) no-repeat;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/legend-circles.gif');?>) no-repeat;
 }
 #a360-linechart-legend li.campaign {
-	background: url(<?php echo plugins_url('/analytics360/images/legend-circles.gif');?>) no-repeat 0 -15px;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/legend-circles.gif');?>) no-repeat 0 -15px;
 }
 #a360-all-traffic-container {
 	padding-top:10px;
@@ -301,59 +301,59 @@ label[for=a360-ga-select-profile] {
 }
 
 .a360-tooltip-upper-left-point {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-upper-left-point.png');?>) no-repeat;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-upper-left-point.png');?>) no-repeat;
 	width:31px;
 	height:34px;
 }
 .a360-tooltip-upper-left-top {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-upper-left-top.png');?>) no-repeat;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-upper-left-top.png');?>) no-repeat;
 	width:183px;
 	height:9px;
 }
 .a360-tooltip-upper-right-point {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-upper-right-point.png');?>) no-repeat 0 1px;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-upper-right-point.png');?>) no-repeat 0 1px;
 	width:31px;
 	height:34px;
 	position:relative;
 	left:152px;
 }
 .a360-tooltip-upper-right-top {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-upper-right-top.png');?>) no-repeat;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-upper-right-top.png');?>) no-repeat;
 	width:183px;
 	height:9px;
 }
 .a360-tooltip-lower-star-top {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-lower-star-top.png');?>) no-repeat 1px 0;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-lower-star-top.png');?>) no-repeat 1px 0;
 	width:183px;
 	height:10px;
 }
 .a360-tooltip-body {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-star-star-body.png');?>) repeat-y;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-star-star-body.png');?>) repeat-y;
 }
 .a360-tooltip-upper-star-bottom {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-upper-star-bottom.png');?>) no-repeat;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-upper-star-bottom.png');?>) no-repeat;
 	width:183px;
 	height:17px;	
 }
 .a360-tooltip-lower-left-bottom {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-lower-left-bottom.png');?>) no-repeat 0 0;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-lower-left-bottom.png');?>) no-repeat 0 0;
 	width:183px;
 	height:15px;
 }
 .a360-tooltip-lower-right-bottom {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-lower-right-bottom.png');?>) no-repeat 1px 0;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-lower-right-bottom.png');?>) no-repeat 1px 0;
 	width:183px;
 	height:15px;
 }
 .a360-tooltip-lower-right-point {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-lower-right-point.png');?>) no-repeat 0 -1px;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-lower-right-point.png');?>) no-repeat 0 -1px;
 	width:30px;
 	height:33px;
 	position:relative;
 	left:154px;
 }
 .a360-tooltip-lower-left-point {
-	background: url(<?php echo plugins_url('/analytics360/images/bubble-lower-left-point.png');?>) no-repeat 0 -1px;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/bubble-lower-left-point.png');?>) no-repeat 0 -1px;
 	width:30px;
 	height:33px;
 }
@@ -380,7 +380,7 @@ a.a360-outgoing {
 	padding-left:20px;
 	color:#555;
 	text-decoration:none;
-	background: url(<?php echo plugins_url('/analytics360/images/outgoing.gif');?>) no-repeat center left;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/outgoing.gif');?>) no-repeat center left;
 }
 a.a360-outgoing:hover {
 	color:#21759B;
@@ -499,7 +499,7 @@ a.a360-outgoing:hover {
 	padding:10px;
 	height:16px;
 	width:240px;
-	background: url(<?php echo plugins_url('/analytics360/images/datepicker.gif');?>) no-repeat;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/datepicker.gif');?>) no-repeat;
 }
 #a360-datepicker-popup.hover {
 	background-position: 0 -37px;
@@ -518,7 +518,7 @@ a.a360-outgoing:hover {
 #a360-current-date-range input {
 	width:100px;
 	font-size:13px;
-	background:#f8f8f8 url(<?php echo plugins_url('/analytics360/images/hang-shadow-light.png');?>) repeat-x;
+	background:#f8f8f8 url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/hang-shadow-light.png');?>) repeat-x;
 	border:1px solid #eee;
 	border-top-color:#ccc;
 }
@@ -680,7 +680,7 @@ div.dp-popup div.dp-nav-next {
 }
 div.dp-popup a.dp-nav-prev-year, div.dp-popup a.dp-nav-prev-month,
 div.dp-popup a.dp-nav-next-year, div.dp-popup a.dp-nav-next-month {
-	background: url(<?php echo plugins_url('/analytics360/images/date-nav.gif');?>) no-repeat;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/date-nav.gif');?>) no-repeat;
 	width:23px;
 	height:28px;
 	text-indent:-32000px;
@@ -737,7 +737,7 @@ table.jCalendar td.today {
 }
 .a360-warning h3 {
 	font-weight:normal;
-	background: url(<?php echo plugins_url('/analytics360/images/warning.gif');?>) no-repeat left 0px;
+	background: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/warning.gif');?>) no-repeat left 0px;
 	padding-left:25px;
 }
 .a360-warning strong {
@@ -783,42 +783,42 @@ form.a360-revoke-or-forget {
 	text-decoration:underline;
 }
 #chatter-messages .sent {
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/email-campaign_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/email-campaign_16.png');?>);
 }
 #chatter-messages .abuse {
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/flag_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/flag_16.png');?>);
 	background-color:#fff;
 	font-size:1em;
 	color:#369;
 }
 #chatter-messages .best_clicks,#chatter-messages .best_opens {
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/success_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/success_16.png');?>);
 	background-color:#E6EFC2;
 }
 #chatter-messages .best_opens {
 }
 #chatter-messages .low_credits{
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/flag_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/flag_16.png');?>);
 	background-color:#fff;
 	
 }
 #chatter-messages .unsubscribes {
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/deleteuser_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/deleteuser_16.png');?>);
 }
 #chatter-messages .subscribes {
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/adduser_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/adduser_16.png');?>);
 }
 #chatter-messages .absplit {
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/email-ab-split_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/email-ab-split_16.png');?>);
 }
 #chatter-messages .inspection {
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/inbox-inspection_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/inbox-inspection_16.png');?>);
 }
 #chatter-messages .scheduled {
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/cal_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/cal_16.png');?>);
 }
 #chatter-messages .mr-notice {
-	background-image: url(<?php echo plugins_url('/analytics360/images/chatter-icons/billing-info_16.png');?>);
+	background-image: url(<?php echo plugins_url('/' . A360_PLUGIN_DIRNAME . '/images/chatter-icons/billing-info_16.png');?>);
 	background-color:#a4c6e2;
 	font-size:1em;
 	color:#369;

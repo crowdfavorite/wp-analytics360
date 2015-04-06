@@ -3,8 +3,8 @@
 Contributors: crowdfavorite, alexkingorg
 Tags: analytics, google-analytics, email, statistics, stats, dashboard
 Requires at least: 3.1
-Tested up to: 4.1
-Stable tag: 1.4.0
+Tested up to: 4.1.1
+Stable tag: 1.4.1
 
 MailChimp's Analytics360 plugin allows you to pull Google Analytics and MailChimp data directly into your dashboard, so you can access robust analytics tools without leaving WordPress.
 
@@ -79,6 +79,10 @@ Please drop us a line if you find a bug or would like to see a new feature added
 
 
 == Changelog ==
+
+= 1.4.1 =
+
+* Update to better handle including image assets in CSS and calculating directory the plugin is installed in.
 
 = 1.4.0 =
 
